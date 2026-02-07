@@ -56,6 +56,10 @@
       transition: width 0.1s linear;
     }
 
+    #game-container {
+      transform-origin: top center;
+    }
+
     canvas {
       border: 2px solid #333;
       display: block;
@@ -71,13 +75,15 @@
   </style>
 </head>
 <body>
-  <div id="hud">
-    <div id="hud-score">SCORE: 0</div>
-    <div id="hud-best">BEST: 0</div>
-    <div id="hud-boosts"></div>
+  <div id="game-container">
+    <div id="hud">
+      <div id="hud-score">SCORE: 0</div>
+      <div id="hud-best">BEST: 0</div>
+      <div id="hud-boosts"></div>
+    </div>
+    <canvas id="game"></canvas>
+    <div id="message">Arrow keys / WASD to move</div>
   </div>
-  <canvas id="game"></canvas>
-  <div id="message">Arrow keys / WASD to move</div>
 
   <script>
     // --- Canvas Setup ---
@@ -838,6 +844,19 @@
       }
       draw(now);
     }
+
+    // --- Responsive Scaling ---
+    const container = document.getElementById('game-container');
+    const BASE_WIDTH = COLS * GRID + 4; // canvas width + border
+
+    function handleResize() {
+      const available = window.innerWidth;
+      const scale = Math.min(1, available / BASE_WIDTH);
+      container.style.transform = 'scale(' + scale + ')';
+    }
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
 
     reset();
     requestAnimationFrame(loop);
